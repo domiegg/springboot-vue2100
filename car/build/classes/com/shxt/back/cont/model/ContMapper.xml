@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.back.cont.mapper.ContMapper" >
+    <resultMap id="BaseResultMap" type="com.shxt.back.cont.model.Cont" >
+        <id column="cont_id" property="cont_id" jdbcType="INTEGER" />
+        <result column="fk_contClient_id" property="fk_contClient_id" jdbcType="INTEGER" />
+        <result column="cont_message" property="cont_message" jdbcType="VARCHAR" />
+        <association property="client" column="fk_contClient_id" select="com.shxt.back.client.mapper.ClientMapper.load"></association>
+    </resultMap>
+    <sql id="cont_columns" >
+        cont_id, fk_contClient_id, cont_message
+    </sql>
+    <select id="load" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="cont_columns" />
+        from cont
+        where cont_id = #{cont_id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from cont
+        where cont_id = #{cont_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.shxt.back.cont.model.Cont" >
+        insert into cont
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="cont_id != null" >
+                cont_id,
+            </if>
+            <if test="fk_contClient_id != null" >
+                fk_contClient_id,
+            </if>
+            <if test="cont_message != null" >
+                cont_message,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="cont_id != null" >
+                #{cont_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_contClient_id != null" >
+                #{fk_contClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="cont_message != null" >
+                #{cont_message,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shxt.back.cont.model.Cont" >
+        update cont
+        <set >
+            <if test="fk_contClient_id != null" >
+                fk_contClient_id = #{fk_contClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="cont_message != null" >
+                cont_message = #{cont_message,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where cont_id = #{cont_id,jdbcType=INTEGER}
+    </update>
+    <select id="contList" parameterType="map" resultMap="BaseResultMap">
+        select * from cont order by cont_id desc
+         limit #{begins},#{num}
+    </select>
+    <select id="count" parameterType="map" resultType="integer">
+        select count(*) from cont
+    </select>
+</mapper>

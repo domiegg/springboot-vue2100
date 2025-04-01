@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.back.says.mapper.SaysMapper" >
+    <resultMap id="BaseResultMap" type="com.shxt.back.says.model.Says" >
+        <id column="says_id" property="says_id" jdbcType="INTEGER" />
+        <result column="fk_saysClient_id" property="fk_saysClient_id" jdbcType="INTEGER" />
+        <result column="says_message" property="says_message" jdbcType="VARCHAR" />
+        <result column="says_date" property="says_date" jdbcType="TIMESTAMP" />
+        <association property="client" column="fk_saysClient_id" select="com.shxt.back.client.mapper.ClientMapper.load"></association>
+    </resultMap>
+    <sql id="says_columns" >
+        says_id, fk_saysClient_id, says_message, says_date
+    </sql>
+    <select id="load" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="says_columns" />
+        from says
+        where says_id = #{says_id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from says
+        where says_id = #{says_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.shxt.back.says.model.Says" >
+        insert into says
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="says_id != null" >
+                says_id,
+            </if>
+            <if test="fk_saysClient_id != null" >
+                fk_saysClient_id,
+            </if>
+            <if test="says_message != null" >
+                says_message,
+            </if>
+            <if test="says_date != null" >
+                says_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="says_id != null" >
+                #{says_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_saysClient_id != null" >
+                #{fk_saysClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="says_message != null" >
+                #{says_message,jdbcType=VARCHAR},
+            </if>
+            <if test="says_date != null" >
+                #{says_date,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shxt.back.says.model.Says" >
+        update says
+        <set >
+            <if test="fk_saysClient_id != null" >
+                fk_saysClient_id = #{fk_saysClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="says_message != null" >
+                says_message = #{says_message,jdbcType=VARCHAR},
+            </if>
+            <if test="says_date != null" >
+                says_date = #{says_date,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where says_id = #{says_id,jdbcType=INTEGER}
+    </update>
+    <select id="saysList" parameterType="map" resultMap="BaseResultMap">
+        select * from says order by says_date desc
+         limit #{begins},#{num}
+    </select>
+    <select id="count" parameterType="map" resultType="integer">
+        select count(*) from says 
+    </select>
+</mapper>

@@ -1,0 +1,4 @@
+﻿/*= Friend links =*/
+.app-friendlinks .list{padding:0 0 21px 15px;}
+.app-friendlinks .list li{height:31px;width:160px;padding:0 6px;margin:20px 0 0;float:left;text-align:center;line-height:31px;}
+.app-friendlinks .list li img{display:block;width:88px;height:31px;margin:0 auto;}

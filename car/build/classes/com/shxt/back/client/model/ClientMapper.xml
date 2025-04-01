@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.back.client.mapper.ClientMapper" >
+    <resultMap id="BaseResultMap" type="com.shxt.back.client.model.Client" >
+        <id column="client_id" property="client_id" jdbcType="INTEGER" />
+        <result column="client_account" property="client_account" jdbcType="VARCHAR" />
+        <result column="client_password" property="client_password" jdbcType="VARCHAR" />
+        <result column="client_paypassword" property="client_paypassword" jdbcType="VARCHAR" />
+        <result column="client_name" property="client_name" jdbcType="VARCHAR" />
+        <result column="client_tel" property="client_tel" jdbcType="VARCHAR" />
+        <result column="client_date" property="client_date" jdbcType="DATE" />
+        <result column="client_power" property="client_power" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="client_columns" >
+        client_id, client_account, client_password, client_paypassword, client_name, client_tel, 
+        client_date, client_power
+    </sql>
+    <select id="load" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="client_columns" />
+        from client
+        where client_id = #{client_id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from client
+        where client_id = #{client_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.shxt.back.client.model.Client" >
+        insert into client
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="client_id != null" >
+                client_id,
+            </if>
+            <if test="client_account != null" >
+                client_account,
+            </if>
+            <if test="client_password != null" >
+                client_password,
+            </if>
+            <if test="client_paypassword != null" >
+                client_paypassword,
+            </if>
+            <if test="client_name != null" >
+                client_name,
+            </if>
+            <if test="client_tel != null" >
+                client_tel,
+            </if>
+            <if test="client_date != null" >
+                client_date,
+            </if>
+            <if test="client_power != null" >
+                client_power,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="client_id != null" >
+                #{client_id,jdbcType=INTEGER},
+            </if>
+            <if test="client_account != null" >
+                #{client_account,jdbcType=VARCHAR},
+            </if>
+            <if test="client_password != null" >
+                #{client_password,jdbcType=VARCHAR},
+            </if>
+            <if test="client_paypassword != null" >
+                #{client_paypassword,jdbcType=VARCHAR},
+            </if>
+            <if test="client_name != null" >
+                #{client_name,jdbcType=VARCHAR},
+            </if>
+            <if test="client_tel != null" >
+                #{client_tel,jdbcType=VARCHAR},
+            </if>
+            <if test="client_date != null" >
+                #{client_date,jdbcType=DATE},
+            </if>
+            <if test="client_power != null" >
+                #{client_power,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shxt.back.client.model.Client" >
+        update client
+        <set >
+            <if test="client_account != null" >
+                client_account = #{client_account,jdbcType=VARCHAR},
+            </if>
+            <if test="client_password != null" >
+                client_password = #{client_password,jdbcType=VARCHAR},
+            </if>
+            <if test="client_paypassword != null" >
+                client_paypassword = #{client_paypassword,jdbcType=VARCHAR},
+            </if>
+            <if test="client_name != null" >
+                client_name = #{client_name,jdbcType=VARCHAR},
+            </if>
+            <if test="client_tel != null" >
+                client_tel = #{client_tel,jdbcType=VARCHAR},
+            </if>
+            <if test="client_date != null" >
+                client_date = #{client_date,jdbcType=DATE},
+            </if>
+            <if test="client_power != null" >
+                client_power = #{client_power,jdbcType=INTEGER},
+            </if>
+        </set>
+        where client_id = #{client_id,jdbcType=INTEGER}
+    </update>
+    <select id="clientList" parameterType="map" resultMap="BaseResultMap">
+        select * from client <where> 
+            <if test="client.client_name!=null and client.client_name!=''">
+                and client_name like concat('%',#{client.client_name},'%')
+            </if>
+            <if test="client.account!=null and client.account!=''">
+                and client_account like concat('%',#{client.client_account},'%')
+            </if>
+        </where>
+         limit #{begins},#{num}
+    </select>
+    <select id="count" parameterType="map" resultType="integer">
+        select count(*) from client <where> 
+            <if test="client.client_name!=null and client.client_name!=''">
+                and client_name like concat('%',#{client.client_name},'%')
+            </if>
+            <if test="client.account!=null and client.account!=''">
+                and client_account like concat('%',#{client.client_account},'%')
+            </if>
+        </where>
+    </select>
+    <select id="login" parameterType="com.shxt.back.client.model.Client" resultMap="BaseResultMap">
+        select * from client where client_account=#{client_account} and client_password=#{client_password}
+    </select>
+</mapper>

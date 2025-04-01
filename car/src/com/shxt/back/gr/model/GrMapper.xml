@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.back.gr.mapper.GrMapper" >
+    <resultMap id="BaseResultMap" type="com.shxt.back.gr.model.Gr" >
+        <id column="gr_id" property="gr_id" jdbcType="INTEGER" />
+        <result column="gr_pho" property="gr_pho" jdbcType="VARCHAR" />
+        <result column="fk_grClient_id" property="fk_grClient_id" jdbcType="INTEGER" />
+        <result column="fk_grCar_id" property="fk_grCar_id" jdbcType="INTEGER" />
+        <result column="gr_grade" property="gr_grade" jdbcType="INTEGER" />
+        <result column="gr_message" property="gr_message" jdbcType="VARCHAR" />
+        <association property="cars" column="fk_grCar_id" select="com.shxt.back.cars.mapper.CarsMapper.load"></association>
+        <association property="client" column="fk_grClient_id" select="com.shxt.back.client.mapper.ClientMapper.load"></association>
+    </resultMap>
+    <sql id="gr_columns" >
+        gr_id, gr_pho, fk_grClient_id, fk_grCar_id, gr_grade, gr_message
+    </sql>
+    <select id="load" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="gr_columns" />
+        from gr
+        where gr_id = #{gr_id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from gr
+        where gr_id = #{gr_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.shxt.back.gr.model.Gr" >
+        insert into gr
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="gr_id != null" >
+                gr_id,
+            </if>
+            <if test="gr_pho != null" >
+                gr_pho,
+            </if>
+            <if test="fk_grClient_id != null" >
+                fk_grClient_id,
+            </if>
+            <if test="fk_grCar_id != null" >
+                fk_grCar_id,
+            </if>
+            <if test="gr_grade != null" >
+                gr_grade,
+            </if>
+            <if test="gr_message != null" >
+                gr_message,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="gr_id != null" >
+                #{gr_id,jdbcType=INTEGER},
+            </if>
+            <if test="gr_pho != null" >
+                #{gr_pho,jdbcType=VARCHAR},
+            </if>
+            <if test="fk_grClient_id != null" >
+                #{fk_grClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_grCar_id != null" >
+                #{fk_grCar_id,jdbcType=INTEGER},
+            </if>
+            <if test="gr_grade != null" >
+                #{gr_grade,jdbcType=INTEGER},
+            </if>
+            <if test="gr_message != null" >
+                #{gr_message,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shxt.back.gr.model.Gr" >
+        update gr
+        <set >
+            <if test="gr_pho != null" >
+                gr_pho = #{gr_pho,jdbcType=VARCHAR},
+            </if>
+            <if test="fk_grClient_id != null" >
+                fk_grClient_id = #{fk_grClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_grCar_id != null" >
+                fk_grCar_id = #{fk_grCar_id,jdbcType=INTEGER},
+            </if>
+            <if test="gr_grade != null" >
+                gr_grade = #{gr_grade,jdbcType=INTEGER},
+            </if>
+            <if test="gr_message != null" >
+                gr_message = #{gr_message,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where gr_id = #{gr_id,jdbcType=INTEGER}
+    </update>
+    <select id="grList" parameterType="map" resultMap="BaseResultMap">
+        select * from gr <where> 
+            <if test="gr.fk_grCar_id!=null and gr.fk_grCar_id!=''">
+                and fk_grCar_id =#{gr.fk_grCar_id}
+            </if>
+            
+        </where>
+        order by gr_id desc
+         limit #{begins},#{num}
+    </select>
+    <select id="count" parameterType="map" resultType="integer">
+        select count(*) from gr <where> 
+            <if test="gr.fk_grCar_id!=null and gr.fk_grCar_id!=''">
+                and fk_grCar_id=#{gr.fk_grCar_id}
+            </if>
+            
+        </where>
+    </select>
+</mapper>

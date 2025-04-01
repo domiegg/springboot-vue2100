@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.back.cars.mapper.CarsMapper" >
+    <resultMap id="BaseResultMap" type="com.shxt.back.cars.model.Cars" >
+        <id column="cars_id" property="cars_id" jdbcType="INTEGER" />
+        <result column="cars_name" property="cars_name" jdbcType="VARCHAR" />
+        <result column="cars_price" property="cars_price" jdbcType="DOUBLE" />
+        <result column="cars_grade" property="cars_grade" jdbcType="INTEGER" />
+        <result column="cars_pho" property="cars_pho" jdbcType="VARCHAR" />
+        <result column="cars_hai" property="cars_hai" jdbcType="VARCHAR" />
+        <result column="cars_vi" property="cars_vi" jdbcType="VARCHAR" />
+        <result column="cars_num" property="cars_num" jdbcType="INTEGER" />
+        <result column="cars_message" property="cars_message" jdbcType="VARCHAR" />
+        <result column="cars_zi" property="cars_zi" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="cars_columns" >
+        cars_id, cars_name, cars_price, cars_grade, cars_pho, cars_hai, cars_vi, cars_num, 
+        cars_message, cars_zi
+    </sql>
+    <select id="load" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="cars_columns" />
+        from cars
+        where cars_id = #{cars_id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from cars
+        where cars_id = #{cars_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.shxt.back.cars.model.Cars" >
+        insert into cars
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="cars_id != null" >
+                cars_id,
+            </if>
+            <if test="cars_name != null" >
+                cars_name,
+            </if>
+            <if test="cars_price != null" >
+                cars_price,
+            </if>
+            <if test="cars_grade != null" >
+                cars_grade,
+            </if>
+            <if test="cars_pho != null" >
+                cars_pho,
+            </if>
+            <if test="cars_hai != null" >
+                cars_hai,
+            </if>
+            <if test="cars_vi != null" >
+                cars_vi,
+            </if>
+            <if test="cars_num != null" >
+                cars_num,
+            </if>
+            <if test="cars_message != null" >
+                cars_message,
+            </if>
+            <if test="cars_zi != null" >
+                cars_zi,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="cars_id != null" >
+                #{cars_id,jdbcType=INTEGER},
+            </if>
+            <if test="cars_name != null" >
+                #{cars_name,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_price != null" >
+                #{cars_price,jdbcType=DOUBLE},
+            </if>
+            <if test="cars_grade != null" >
+                #{cars_grade,jdbcType=INTEGER},
+            </if>
+            <if test="cars_pho != null" >
+                #{cars_pho,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_hai != null" >
+                #{cars_hai,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_vi != null" >
+                #{cars_vi,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_num != null" >
+                #{cars_num,jdbcType=INTEGER},
+            </if>
+            <if test="cars_message != null" >
+                #{cars_message,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_zi != null" >
+                #{cars_zi,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shxt.back.cars.model.Cars" >
+        update cars
+        <set >
+            <if test="cars_name != null" >
+                cars_name = #{cars_name,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_price != null" >
+                cars_price = #{cars_price,jdbcType=DOUBLE},
+            </if>
+            <if test="cars_grade != null" >
+                cars_grade = #{cars_grade,jdbcType=INTEGER},
+            </if>
+            <if test="cars_pho != null" >
+                cars_pho = #{cars_pho,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_hai != null" >
+                cars_hai = #{cars_hai,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_vi != null" >
+                cars_vi = #{cars_vi,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_num != null" >
+                cars_num = #{cars_num,jdbcType=INTEGER},
+            </if>
+            <if test="cars_message != null" >
+                cars_message = #{cars_message,jdbcType=VARCHAR},
+            </if>
+            <if test="cars_zi != null" >
+                cars_zi = #{cars_zi,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where cars_id = #{cars_id,jdbcType=INTEGER}
+    </update>
+    <select id="carsList" parameterType="map" resultMap="BaseResultMap">
+        select * from cars <where> 
+            <if test="cars.cars_name!=null and cars.cars_name!=''">
+                and cars_name like concat('%',#{cars.cars_name},'%')
+            </if>
+            <if test="cars.zi!=null and cars.zi!=''">
+                and cars_zi like concat('%',#{cars.cars_zi},'%')
+            </if>
+            <if test="cars.grade!=null and cars.grade!=''">
+                and cars_grade like concat('%',#{cars.cars_grade},'%')
+            </if>
+            <if test="maxPrice!=null and maxPrice!=''">
+                <![CDATA[and cars_price <= ${maxPrice}]]>
+            </if>
+            <if test="minPrice!=null and minPrice!=''">
+                <![CDATA[and cars_price >= ${minPrice}]]>
+            </if>
+        </where>
+        order by cars_id desc
+         limit #{begins},#{num}
+    </select>
+    <select id="count" parameterType="map" resultType="integer">
+        select count(*) from cars <where> 
+            <if test="cars.cars_name!=null and cars.cars_name!=''">
+                and cars_name like concat('%',#{cars.cars_name},'%')
+            </if>
+            <if test="cars.zi!=null and cars.zi!=''">
+                and cars_zi like concat('%',#{cars.cars_zi},'%')
+            </if>
+            <if test="cars.grade!=null and cars.grade!=''">
+                and cars_grade like concat('%',#{cars.cars_grade},'%')
+            </if>
+            <if test="maxPrice!=null and maxPrice!=''">
+                <![CDATA[and cars_price <= ${maxPrice}]]>
+            </if>
+            <if test="minPrice!=null and minPrice!=''">
+                <![CDATA[and cars_price >= ${minPrice}]]>
+            </if>
+        </where>
+    </select>
+    <select id="numMax" resultMap="BaseResultMap">
+        select * from cars ORDER BY cars_num desc limit 0,3
+    </select>
+    <select id="timeZao" resultMap="BaseResultMap">
+        select * from cars ORDER BY cars_id desc limit 0,3
+    </select>
+    <update id="buys" parameterType="map">
+        update cars set cars_num=cars_num+#{cars_num} where cars_id=#{cars_id}
+    </update>
+    <update id="tui" parameterType="map">
+        update cars set cars_num=cars_num-#{cars_num} where cars_id=#{cars_id}
+    </update>
+</mapper>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.back.sc.mapper.ScMapper" >
+    <resultMap id="BaseResultMap" type="com.shxt.back.sc.model.Sc" >
+        <id column="sc_id" property="sc_id" jdbcType="INTEGER" />
+        <result column="fk_scClient_id" property="fk_scClient_id" jdbcType="INTEGER" />
+        <result column="fk_scCars_id" property="fk_scCars_id" jdbcType="INTEGER" />
+        <result column="sc_num" property="sc_num" jdbcType="INTEGER" />
+        <association property="client" column="fk_scClient_id" select="com.shxt.back.client.mapper.ClientMapper.load"></association>
+        <association property="cars" column="fk_scCars_id" select="com.shxt.back.cars.mapper.CarsMapper.load"></association>
+    </resultMap>
+    <sql id="sc_columns" >
+        sc_id, fk_scClient_id, fk_scCars_id, sc_num
+    </sql>
+    <select id="load" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="sc_columns" />
+        from sc
+        where sc_id = #{sc_id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from sc
+        where sc_id = #{sc_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.shxt.back.sc.model.Sc" >
+        insert into sc
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="sc_id != null" >
+                sc_id,
+            </if>
+            <if test="fk_scClient_id != null" >
+                fk_scClient_id,
+            </if>
+            <if test="fk_scCars_id != null" >
+                fk_scCars_id,
+            </if>
+            <if test="sc_num != null" >
+                sc_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="sc_id != null" >
+                #{sc_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_scClient_id != null" >
+                #{fk_scClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_scCars_id != null" >
+                #{fk_scCars_id,jdbcType=INTEGER},
+            </if>
+            <if test="sc_num != null" >
+                #{sc_num,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shxt.back.sc.model.Sc" >
+        update sc
+        <set >
+            <if test="fk_scClient_id != null" >
+                fk_scClient_id = #{fk_scClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_scCars_id != null" >
+                fk_scCars_id = #{fk_scCars_id,jdbcType=INTEGER},
+            </if>
+            <if test="sc_num != null" >
+                sc_num = #{sc_num,jdbcType=INTEGER},
+            </if>
+        </set>
+        where sc_id = #{sc_id,jdbcType=INTEGER}
+    </update>
+    <select id="scList" parameterType="map" resultMap="BaseResultMap">
+        select * from sc  where fk_scClient_id=#{sc.fk_scClient_id} order by sc_id desc
+         limit #{begins},#{num} 
+    </select>
+    <select id="count" parameterType="map" resultType="integer">
+        select count(*) from sc where fk_scClient_id=#{sc.fk_scClient_id}
+    </select>
+</mapper>

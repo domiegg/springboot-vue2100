@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.back.re.mapper.ReMapper" >
+    <resultMap id="BaseResultMap" type="com.shxt.back.re.model.Re" >
+        <id column="re_id" property="re_id" jdbcType="INTEGER" />
+        <result column="fk_reClient_id" property="fk_reClient_id" jdbcType="INTEGER" />
+        <result column="fk_reCars_id" property="fk_reCars_id" jdbcType="INTEGER" />
+        <result column="re_status" property="re_status" jdbcType="INTEGER" />
+        <association property="client" column="fk_reClient_id" select="com.shxt.back.client.mapper.ClientMapper.load"></association>
+        <association property="cars" column="fk_reCars_id" select="com.shxt.back.cars.mapper.CarsMapper.load"></association>
+    </resultMap> 
+    <sql id="re_columns" >
+        re_id, fk_reClient_id, fk_reCars_id, re_status
+    </sql>
+    <select id="load" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="re_columns" />
+        from re
+        where re_id = #{re_id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from re
+        where re_id = #{re_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.shxt.back.re.model.Re" >
+        insert into re
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="re_id != null" >
+                re_id,
+            </if>
+            <if test="fk_reClient_id != null" >
+                fk_reClient_id,
+            </if>
+            <if test="fk_reCars_id != null" >
+                fk_reCars_id,
+            </if>
+            <if test="re_status != null" >
+                re_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="re_id != null" >
+                #{re_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_reClient_id != null" >
+                #{fk_reClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_reCars_id != null" >
+                #{fk_reCars_id,jdbcType=INTEGER},
+            </if>
+            <if test="re_status != null" >
+                #{re_status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shxt.back.re.model.Re" >
+        update re
+        <set >
+            <if test="fk_reClient_id != null" >
+                fk_reClient_id = #{fk_reClient_id,jdbcType=INTEGER},
+            </if>
+            <if test="fk_reCars_id != null" >
+                fk_reCars_id = #{fk_reCars_id,jdbcType=INTEGER},
+            </if>
+            <if test="re_status != null" >
+                re_status = #{re_status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where re_id = #{re_id,jdbcType=INTEGER}
+    </update>
+    <select id="reList" parameterType="map" resultMap="BaseResultMap">
+        select * from re <where> 
+            <if test="re.re_status!=null and re.re_status!=''">
+                and re_status =#{re.re_status}
+            </if>
+        </where> order by re_id desc
+         limit #{begins},#{num}
+    </select>
+    <select id="count" parameterType="map" resultType="integer">
+        select count(*) from re <where> 
+            <if test="re.re_status!=null and re.re_status!=''">
+                and re_status =#{re.re_status}
+            </if>
+        </where> 
+    </select>
+</mapper>
